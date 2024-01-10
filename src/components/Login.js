@@ -81,7 +81,6 @@ const Login = (e) => {
       focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
       "
             placeholder="Enter your Password"
-            type={'password'}
           />
 
           <button

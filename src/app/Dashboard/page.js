@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useContext, useState } from "react";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { BiSolidUserPin } from "react-icons/bi";
@@ -38,7 +39,12 @@ const Admin = () => {
   return (
     <div className="flex">
       <div className="w-[20%] h-screen  flex flex-col items-center">
-        <h1 className="p-10 font-bold">LOGO</h1>
+      <Image
+      src="/mylogo.jpg"
+      width={150}
+      height={150}
+      alt="Picture of the author"
+    />
 
         <button
           className="flex justify-center items-center  text-[20px] mb-4  "
