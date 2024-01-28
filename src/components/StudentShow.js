@@ -14,8 +14,18 @@ import Image from "next/image";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
+import { useContext } from "react";
+import {myContext} from '../app/utils/ContextApi'
+
+
+
 
 const StudentShow = () => {
+
+  const [spinner, setSpinner] = useState(false);
+  const {info, setInfo} = useContext(myContext)
+
+
   const [fnameError, setFnameError] = useState("");
   const [lnameError, setLnameError] = useState("");
   const [courseError, setCourseError] = useState("");
@@ -123,17 +133,22 @@ const StudentShow = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const MyData = await getData();
-      setUserData(MyData);
+      try {
+        setSpinner(true);
+        const MyData = await getData();
+        setUserData(MyData);
+        setInfo(MyData)
+      } catch (error) {
+        setSpinner(false);
+        console.log(error);
+      }
+      
     }
     fetchData();
   }, []);
+  
 
-  const [spinner, setSpinner] = useState(false);
-
-  setTimeout(() => {
-    setSpinner(true);
-  }, 2000);
+ 
 
   return (
     <div className="container mx-auto p-8 h-screen">

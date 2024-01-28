@@ -1,139 +1,47 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiCirclePlus } from "react-icons/ci";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import { IoArrowBackSharp } from "react-icons/io5";
-import { collection, doc, addDoc, getDocs, getDoc } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
 import { db } from "../app/firebaseConfig";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import TextField from "@mui/material/TextField";
+import { myContext } from "../app/utils/ContextApi";
 
-const StudentShow = () => {
-  const [fnameError, setFnameError] = useState("");
-  const [lnameError, setLnameError] = useState("");
-  const [courseError, setCourseError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [input, setInput] = useState({
-    firstName: "",
-    lastName: "",
-    course: "",
-    password: "",
-    email: "",
-    phone: "",
-  });
-
-  const addData = async (input) => {
-    if (!input.firstName || !input.firstName.length) {
-      setFnameError("First name is required");
-      return false;
-    } else {
-      setFnameError("");
-    }
-    if (!input.lastName || !input.lastName.length) {
-      setLnameError("Last name is required");
-      return false;
-    } else {
-      setLnameError("");
-    }
-    if (!input.course || !input.course.length) {
-      setCourseError("Course name is required");
-      return false;
-    } else {
-      setCourseError("");
-    }
-
-    if (!input.password || !input.password.length) {
-      setPasswordError("Password is required");
-      return false;
-    } else {
-      setPasswordError("");
-    }
-
-    if (!input.email || !input.email.length) {
-      setEmailError("Email is required");
-      return false;
-    } else {
-      setEmailError("");
-    }
-
-    if (!input.phone || !input.phone.length) {
-      setPhoneError("Phone number is required");
-      return false;
-    } else {
-      setPhoneError("");
-    }
-
-    const docRef = await addDoc(collection(db, "cities"), {
-      fname: input.firstName,
-      lname: input.lastName,
-      course: input.course,
-      password: input.password,
-      email: input.email,
-      phone: input.phone,
-    });
-
-    // setTimeout(() => {
-    //   setInput({
-    //     firstName: "",
-    //     lastName: "",
-    //     course: "",
-    //     password: "",
-    //     email: "",
-    //     phone: "",
-    //   });
-    // }, 2000);
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
-    // console.log("Document written with ID: ", docRef.id);
-  };
-
-  const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, "cities"));
-    const data = [];
-    querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() });
-      // console.log(doc.id, " => ", doc.data());
-    });
-
-    return data;
-  };
-
-  const [userData, setUserData] = useState([]);
-
-  useEffect(() => {
+const Attendence = () => {
+  const [spinner, setSpinner] = useState(false);
+  const { info, setInfo } = useContext(myContext);
+  
+ 
+ useEffect(() => {
+    setSpinner(true);
+    const newArray = info.map(data => data.fname);
+    console.log(newArray);
+    
     async function fetchData() {
-      const MyData = await getData();
-      setUserData(MyData);
+      try {
+        const docRef = await addDoc(collection(db, "attendence"), {
+          name: newArray
+        });
+        console.log("Document written with ID: ", docRef.id);
+       
+      } catch (error) {
+        setSpinner(false);
+        console.log(error);
+      }
+      
     }
-    fetchData();
+  
+    return ()=> fetchData();
+  
   }, []);
 
-  const [spinner, setSpinner] = useState(false);
 
-  setTimeout(() => {
-    setSpinner(true);
-  }, 2000);
+
 
   return (
     <div className="container mx-auto p-8 h-screen">
@@ -157,14 +65,12 @@ const StudentShow = () => {
       </div>
       {spinner ? (
         <div className="scroll-auto max-h-screen">
-          {userData.map((kamran, index) => {
-            return (
-              <div
-                key={kamran.id}
+          <div
+                
                 className="w-full flex justify-center mt-2 bg-white"
               >
                 <ul className="flex items-center w-full max-w-[900px] space-x-4 p-2">
-                  <li className="flex-1">{index + 1}</li>
+                  <li className="flex-1"></li>
                   <li className="flex-1">
                     <Image
                       src="/avataaars.png"
@@ -173,13 +79,14 @@ const StudentShow = () => {
                       alt="Picture of the author"
                     />
                   </li>
-                  <li className="flex-1">{kamran.fname}</li>
-                  <li className="flex-1">{kamran.course}</li>
-                  <li className="flex-1">{kamran.password}</li>
+                  <li className="flex-1">fname</li>
+                  <li className="flex-1">Check in </li>
+                  <li className="flex-1">check out</li>
                 </ul>
               </div>
-            );
-          })}
+
+
+
         </div>
       ) : (
         <Box
@@ -197,4 +104,4 @@ const StudentShow = () => {
   );
 };
 
-export default StudentShow;
+export default Attendence;

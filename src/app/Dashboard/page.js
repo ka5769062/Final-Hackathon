@@ -12,7 +12,6 @@ import { db } from "../firebaseConfig";
 import { setCookie } from 'cookies-next';
 import { deleteCookie } from 'cookies-next';
 
-
 const Admin = () => {
   const router = useRouter();
 
